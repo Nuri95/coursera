@@ -87,8 +87,8 @@ class Client:
 
 
 client = Client('127.0.0.1', 10001, timeout=15)
-# client.put("palm.cpu", 0.5, timestamp=1150864247)
-# client.put("ss.cpu", 0.5, timestamp=1150864247)
-# client.put("ss.cpu", 0.6, timestamp=1150864247)
+client.put("palm.cpu", 0.5, timestamp=1150864247)
+client.put("ss.cpu", 0.5, timestamp=1150864247)
+client.put("ss.cpu", 0.6, timestamp=1150864247)
 print(client.get("*"))
 print(client.get("ss.cpu"))
