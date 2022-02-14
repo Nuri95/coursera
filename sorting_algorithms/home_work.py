@@ -93,13 +93,45 @@ print(merge_sort(array))
     в одной находятся элементы, которые не меньше медианы, в другой — не больше медианы.
 """
 
-def shaker_sort(array):
-    array_length = len(array)
+
+def partition(array, pivot):
+    less = []
+    more = []
+    equal = []
+
+    for i in array:
+        if i < pivot:
+            less.append(i)
+        elif i > pivot:
+            more.append(i)
+        elif i == pivot:
+            equal.append(i)
+
+    return less, equal, more
 
 
-def median():
-    pass
+def top_key(array, key):
+    pivot = array[random.randrange(len(array))]  # эффективность зависит от выбора случайного числа
+    left, middle, right = partition(array, pivot)
 
-array = [6, 4, 3, 2, 1, 4]
-data = [random.randrange(0, 50) for _ in range(2 * 4 + 1)]
-print(data)
+    if len(left) == key:
+        return left
+
+    if len(left) < key <= len(left) + len(middle):
+        return middle
+
+    if len(left) > key:
+        return top_key(array, key)
+
+    return top_key(right, key - len(left) - len(middle))
+
+
+def median(array):
+    result_list = top_key(array, len(array) // 2 + 1)
+
+    return max(result_list)
+
+array = [6, 4, 3, 2, 1, 4, 3]  # 3
+# data = [random.randrange(0, 50) for _ in range(2 * 4 + 1)]
+median = median(array)
+print('mediana = ', median)
