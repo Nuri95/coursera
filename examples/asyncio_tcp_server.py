@@ -1,27 +1,43 @@
 # asyncio, tcp сервер
-# напишем свой TCP-сервер, который обрабатывает несколько входящих соединений одновременно
 
 import asyncio
 
 
 async def handle_echo(reader, writer):
-    data = await reader.read(1024)  # мы можем читать данные из нашего сокета
-    message = data.decode()
-    addr = writer.get_extra_info("peername")
-    print("received %r from %r" % (message, addr))
+    while True:
+        try:
+            data = await reader.read(100)
+            if not data:
+                print('Client died...')
+                break
+
+            message = data.decode()
+            addr = writer.get_extra_info('peername')
+
+            print(f"Received {message!r} from {addr!r}")
+
+            print(f"Send: {message!r}")
+            writer.write(data)
+            await writer.drain()
+        except KeyboardInterrupt:
+            writer.close()
+            break
+        except Exception as e:
+            print(e, '___________________')
+
+    print("Close the connection")
     writer.close()
 
 
-loop = asyncio.get_event_loop()
-coro = asyncio.start_server(handle_echo, "127.0.0.1", 10001, loop=loop)
-server = loop.run_until_complete(coro)
-try:
-    loop.run_forever()
-#     мы будем обрабатывать все входящие соединения, и после того, как мы заакцептили соединение,
-#     для каждого соединения будет создана отдельная корутина, и в этой корутине будет выполнена наша функция
-except KeyboardInterrupt:
-    pass
+async def main():
+    server = await asyncio.start_server(
+        handle_echo, '127.0.0.1', 10001
+    )
 
-server.close()
-loop.run_until_complete(server.wait_closed())
-loop.close()
+    addrs = ', '.join(str(sock.getsockname()) for sock in server.sockets)
+    print(f'Serving on {addrs}')
+
+    async with server:
+        await server.serve_forever()
+
+asyncio.run(main())

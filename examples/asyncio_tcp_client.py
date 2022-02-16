@@ -9,18 +9,26 @@
 
 import asyncio
 
+async def tcp_echo_client(message):
+    try:
+        reader, writer = await asyncio.open_connection(
+            '127.0.0.1', 10001)
 
-async def tcp_echo_client(message, loop):
-    # два объекта, при помощи которых можно взаимодействовать с нашим удаленным сервером.
-    # при помощи объекта reader можно читать данные с сервера,
-    # при помощи объекта writer можно записывать данные на сервер
-    reader, writer = await asyncio.open_connection("127.0.0.1", 10001, loop=loop)
+        print(f'Send: {message!r}')
+        writer.write(message.encode())
+        await writer.drain()
 
-    print("send: %r" % message)
-    writer.write(message.encode())
-    writer.close()
+        while True:
+            data = await reader.read(100)
+            print(f'Received: {data.decode()!r}')
+            text = input()
+            writer.write(text.encode())
+            await writer.drain()
 
-loop = asyncio.get_event_loop()
-message = "hello World!"
-loop.run_until_complete(tcp_echo_client(message, loop))
-loop.close()
+
+        print('Close the connection')
+        writer.close()
+    except Exception as e:
+        print(1111111111)
+
+asyncio.run(tcp_echo_client('Hello World!'))
