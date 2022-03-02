@@ -6,6 +6,7 @@ authors = ["nuri <nuri@antidasoftware.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+binarytree = "^6.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
