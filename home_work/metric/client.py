@@ -1,4 +1,5 @@
 import socket
+import sys
 import time
 
 # Финальное задание
@@ -57,7 +58,7 @@ class Client:
             for value in values:
                 if not value:
                     continue
-                print('value = ', value)
+
                 name, value_name, timestamp = value.split(' ')
                 if name in data:
                     data[name].append((int(timestamp), float(value_name)))
@@ -72,9 +73,8 @@ class Client:
         request_str = f'get {key}'
         try:
             message = self.sock.get_message(request_str)
-            mes = self._parse_message(message)
-            print('вернул =', mes)
-            return mes
+
+            return self._parse_message(message)
         except Exception as e:
             raise e
 
@@ -89,9 +89,9 @@ class Client:
             raise ClientError
 
 
-client = Client('127.0.0.1', 10001, timeout=15)
-client.put("palm.cpu", 0.5, timestamp=1150864247)
-client.put("ss.cpu", 0.5, timestamp=1150864247)
-client.put("ss.cpu", 0.6, timestamp=1150864247)
-print(client.get("*"))
-print(client.get("ss.cpu"))
+# client = Client('127.0.0.1', 10001, timeout=15)
+# client.put("palm.cpu", 0.5, timestamp=1150864247)
+# client.put("ss.cpu", 0.5, timestamp=1150864247)
+# client.put("ss.cpu", 0.6, timestamp=1150864247)
+# print(client.get("*"))
+# print(client.get("ss.cpu"))
