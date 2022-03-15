@@ -4,7 +4,7 @@ import time
 
 # Финальное задание
 # задание: https://www.coursera.org/learn/diving-in-python/programming/aG3x3/kliient-dlia-otpravki-mietrik
-
+# Клиент для отправки метрик
 
 class Socket:
     def __init__(self, ip, port):

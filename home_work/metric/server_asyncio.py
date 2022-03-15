@@ -3,6 +3,7 @@ import sys
 
 
 # Задание: https://www.coursera.org/learn/diving-in-python/programming/Xcdpa/siervier-dlia-priiema-mietrik
+# Сервер для приема метрик
 
 # 1 способ: с классом
 class ClientServerProtocol(asyncio.Protocol):
