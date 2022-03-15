@@ -1,6 +1,8 @@
 import socket
-import sys
 import time
+
+# Финальное задание
+# задание: https://www.coursera.org/learn/diving-in-python/programming/aG3x3/kliient-dlia-otpravki-mietrik
 
 
 class Socket:
@@ -12,13 +14,12 @@ class Socket:
 
     def listen_message(self):
         while True:
-            header = self.sock.recv(100)
+            header = self.sock.recv(1024)
             if not len(header):
                 sys.exit()
             try:
                 header = header.decode('utf-8')
             except KeyError:
-                print('ошибка')
                 self.sock.close()
                 break
             else:
@@ -27,13 +28,11 @@ class Socket:
 
     def send_message(self, message):
         bytes = message.encode('utf-8')
-        print('клиент отправляется put запрос')
         self.sock.send(bytes)
         return self.listen_message()
 
     def get_message(self, request):
         bytes = request.encode('utf-8')
-        print('клиент отправил get запрос')
         self.sock.send(bytes)
         return self.listen_message()
 
@@ -58,20 +57,24 @@ class Client:
             for value in values:
                 if not value:
                     continue
+                print('value = ', value)
                 name, value_name, timestamp = value.split(' ')
                 if name in data:
-                    data[name].append((value_name, timestamp))
+                    data[name].append((int(timestamp), float(value_name)))
                 else:
-                    data[name] = [(value_name, timestamp)]
+                    data[name] = [(int(timestamp), float(value_name))]
 
             return data
+        else:
+            raise ClientError
 
     def get(self, key):
         request_str = f'get {key}'
         try:
             message = self.sock.get_message(request_str)
-
-            return self._parse_message(message)
+            mes = self._parse_message(message)
+            print('вернул =', mes)
+            return mes
         except Exception as e:
             raise e
 
